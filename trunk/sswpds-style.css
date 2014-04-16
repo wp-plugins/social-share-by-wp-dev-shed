@@ -21,30 +21,12 @@ SHARE BUTTONS STYLES
 	}
 
 .sswpds-social-wrap a {
+	display: inline-block;
 	-webkit-box-sizing: border-box; 
 	-moz-box-sizing: border-box; 
 	-o-box-sizing: border-box; 
 	box-sizing: border-box;
 	margin-right: 10px;
 	text-decoration: none !important;
-}
-
-.sswpds-social-fb {
-	display: inline-block;
-	background: url(images/icon-fb.png) no-repeat left center #3B5998;
-	padding: 7px 15px 7px 30px;
-	text-decoration: none;
-}
-
-.sswpds-social-tw {
-	display: inline-block;
-	background: url(images/icon-tw.png) no-repeat left center #55ACEE;
-	padding: 7px 15px 7px 36px;
-	text-decoration: none;
-}
-
-.sswpds-social-fb,
-.sswpds-social-tw {
-	color: #fff !important;	
 }
 
