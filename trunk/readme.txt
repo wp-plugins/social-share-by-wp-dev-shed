@@ -3,7 +3,7 @@ Contributors: WP Dev Shed
 Tags: button, facebook, share, social, theme, twitter
 Requires at least: 3.2
 Tested up to: 3.8.1
-Stable tag: 1.1
+Stable tag: 1.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -23,6 +23,9 @@ The easy and simple way to share you blog posts via Facebook and Twitter. Just a
 1. screenshot-1.png displays the Facebook and Twitter share buttons on an article
 
 == Changelog ==
+
+= 1.2 =
+* Added feature to control where the buttons appear. At the top of posts, the bottom or both.
 
 = 1.1 =
 * Removed the Facebook OpenGraph meta data
