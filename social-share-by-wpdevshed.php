@@ -3,7 +3,7 @@
 Plugin Name: Social Share by WP Dev Shed
 Plugin URI: http://wordpress.org/plugins/social-share-by-wp-dev-shed/
 Description: Adds Facebook and Twitter social share buttons to your blog posts.
-Version: 1.1
+Version: 1.2
 Author: WP Dev Shed
 Author URI: http://wpdevshed.com/
 License: GNU General Public License v2.0
@@ -31,17 +31,20 @@ function sswpds_filter_the_content( $content ) {
     
 	// display social share only in single page
 	if ( is_single() ) {
+		// display social share both before and after content
+		if( (get_theme_mod( 'social_share_display_before_content' )) && (get_theme_mod( 'social_share_display_after_content' )) ) {
+			return $new_content . $content . $new_content;
+		
 		// display social share before content
-		if( get_theme_mod( 'social_share_display_before_content' ) ) {
+		} else if( get_theme_mod( 'social_share_display_before_content' ) ) {
 			return $new_content . $content;
 		
 		// display social share after content
 		} else if( get_theme_mod( 'social_share_display_after_content' ) ) {
 			return $content . $new_content;
-		
 		// display on both
 		} else {
-			return $new_content . $content . $new_content;
+			return $content;
 		}
 	} else {
 		return $content;
@@ -54,31 +57,33 @@ add_filter( 'the_content', 'sswpds_filter_the_content' );
  */
 function rs_social_share_plugin_customizer( $wp_customize ) {
 	/* category link in homepage option */
-	$wp_customize->add_section( 'social_share_before_content' , array(
-		'title'       => __( 'Displary Social Share', 'social_share' ),
+	$wp_customize->add_section( 'social_share_display_section' , array(
+		'title'       => __( 'Display Social Share', 'social_share' ),
 		'priority'    => 34,
 		'description' => __( 'Option to show/hide the social share before content, after content or display on both which is by default.', 'surfarama' ),
 	) );
 	
 	$wp_customize->add_setting( 'social_share_display_before_content', array (
+		'default' 	=> 1,
 		'sanitize_callback' => 'rs_social_share_sanitize_checkbox',
 	) );
 	
 	$wp_customize->add_control('social_share_display_before_content', array(
 		'settings' 	=> 'social_share_display_before_content',
 		'label' 	=> __('Show social share before content?', 'social_share'),
-		'section' 	=> 'social_share_before_content',
+		'section' 	=> 'social_share_display_section',
 		'type' 		=> 'checkbox',
 	));
 	
 	$wp_customize->add_setting( 'social_share_display_after_content', array (
+		'default' 	=> 0,
 		'sanitize_callback' => 'rs_social_share_sanitize_checkbox',
 	) );
 	
 	$wp_customize->add_control('social_share_display_after_content', array(
 		'settings' 	=> 'social_share_display_after_content',
 		'label' 	=> __('Show social share after content?', 'social_share'),
-		'section' 	=> 'social_share_before_content',
+		'section' 	=> 'social_share_display_section',
 		'type' 		=> 'checkbox',
 	));
 }
