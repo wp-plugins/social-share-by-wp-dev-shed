@@ -3,7 +3,7 @@
 Plugin Name: Social Share by WP Dev Shed
 Plugin URI: http://wordpress.org/plugins/social-share-by-wp-dev-shed/
 Description: Adds Facebook and Twitter social share buttons to your blog posts.
-Version: 1.2
+Version: 1.3
 Author: WP Dev Shed
 Author URI: http://wpdevshed.com/
 License: GNU General Public License v2.0
@@ -24,31 +24,35 @@ add_action('wp_enqueue_scripts', 'sswpds_script_styles');
  * Add the social share buttons to the_content()
  */
 function sswpds_filter_the_content( $content ) {
-	$new_content = '<div class="sswpds-social-wrap">' . "\n";
-	$new_content .= '<a href="' . esc_url('http://www.facebook.com/share.php?u=') . get_permalink() . '" target="_blank"><img src="' . plugin_dir_url(__FILE__) . 'images/icon-fb.png' . '" alt="" /></a>' . "\n";
-	$new_content .= '<a href="' . esc_url('http://twitter.com/home?status=') . get_the_title() . esc_attr('%0D%0A') . get_permalink() . '" target="_blank"><img src="' . plugin_dir_url(__FILE__) . 'images/icon-tw.png' . '" alt="" /></a>' . "\n";
-	$new_content .= '</div>' . "\n";
+	$the_content_html = '';
+	
+	// assign social buttons
+	$new_content = social_share_buttons_html();
     
 	// display social share only in single page
 	if ( is_single() ) {
+	
 		// display social share both before and after content
 		if( (get_theme_mod( 'social_share_display_before_content' )) && (get_theme_mod( 'social_share_display_after_content' )) ) {
-			return $new_content . $content . $new_content;
+			$the_content_html = $new_content . $content . $new_content;
 		
 		// display social share before content
 		} else if( get_theme_mod( 'social_share_display_before_content' ) ) {
-			return $new_content . $content;
+			$the_content_html = $new_content . $content;
 		
 		// display social share after content
 		} else if( get_theme_mod( 'social_share_display_after_content' ) ) {
-			return $content . $new_content;
+			$the_content_html = $content . $new_content;
 		// display on both
 		} else {
-			return $content;
+			$the_content_html = $content;
 		}
+		
 	} else {
-		return $content;
+		$the_content_html = $content;
 	}
+	
+	return $the_content_html;
 }
 add_filter( 'the_content', 'sswpds_filter_the_content' );
 
@@ -103,4 +107,47 @@ if ( ! function_exists( 'rs_social_share_sanitize_checkbox' ) ) :
 	}
 endif;
 
-?>
+
+add_shortcode( 'wpdev_social_share', 'wpdev_social_share_func' );
+function wpdev_social_share_func( $atts ) {
+	ob_start();
+
+	$social_share = '';
+	
+	// display social buttons
+	social_share_buttons_html( true );
+	
+	$social_share = ob_get_contents();
+	ob_end_clean();
+	
+	return $social_share;
+}
+
+
+function social_share_buttons_html( $echo = false ) {
+	ob_start();
+	
+	$social_share_html = '';
+	
+	?>
+		
+		<div class="sswpds-social-wrap">
+			<a href="<?php echo esc_url('http://www.facebook.com/share.php?u=') . get_permalink(); ?>" target="_blank">
+				<img src="<?php echo plugin_dir_url(__FILE__) . 'images/icon-fb.png'; ?>" alt="Share on Facebook" />
+			</a>
+			<a href="<?php echo esc_url('http://twitter.com/home?status=') . esc_attr( get_the_title() ) . ' ' . get_permalink(); ?>" target="_blank">
+				<img src="<?php echo plugin_dir_url(__FILE__) . 'images/icon-tw.png'; ?>" alt="Share on Twitter" />
+			</a>
+		</div>
+		
+	<?php
+	
+	$social_share_html = ob_get_contents();
+	ob_end_clean();
+	
+	
+	if( $echo )
+		echo $social_share_html;
+	else
+		return $social_share_html;
+}
