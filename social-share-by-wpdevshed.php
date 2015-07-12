@@ -3,7 +3,7 @@
 Plugin Name: Social Share by WP Dev Shed
 Plugin URI: http://wordpress.org/plugins/social-share-by-wp-dev-shed/
 Description: Adds Facebook and Twitter social share buttons to your blog posts.
-Version: 1.4
+Version: 1.5
 Author: WP Dev Shed
 Author URI: http://wpdevshed.com/
 License: GNU General Public License v2.0
@@ -32,7 +32,7 @@ function rs_social_share_plugin_customizer( $wp_customize ) {
 	) );
 
 	$wp_customize->add_setting( 'social_share_display_in_posts', array (
-		'default' 	=> 1,
+		'default' 	=> 0,
 		'sanitize_callback' => 'rs_social_share_sanitize_checkbox',
 	) );
 	$wp_customize->add_control('social_share_display_in_posts', array(
@@ -43,7 +43,7 @@ function rs_social_share_plugin_customizer( $wp_customize ) {
 	));
 
 	$wp_customize->add_setting( 'social_share_display_in_page', array (
-		'default' 	=> 1,
+		'default' 	=> 0,
 		'sanitize_callback' => 'rs_social_share_sanitize_checkbox',
 	) );
 	$wp_customize->add_control('social_share_display_in_page', array(
@@ -136,10 +136,7 @@ function wpdev_social_share_func( $atts ) {
 	// display social buttons
 	social_share_buttons_html( true );
 	
-	$social_share = ob_get_contents();
-	ob_end_clean();
-	
-	return $social_share;
+	return ob_get_clean();
 }
 
 
@@ -152,28 +149,24 @@ function social_share_buttons_html( $echo = false ) {
 
 	$current_post_type = get_post_type();
 	?>
-		
-		<div class="sswpds-social-wrap">
-			<a href="<?php echo esc_url('http://www.facebook.com/share.php?u=') . get_permalink(); ?>" target="_blank">
-				<img src="<?php echo plugin_dir_url(__FILE__) . 'images/icon-fb.png'; ?>" alt="Share on Facebook" />
-			</a>
-			<a href="<?php echo esc_url('http://twitter.com/home?status=') . esc_attr( get_the_title() ) . ' ' . get_permalink(); ?>" target="_blank">
-				<img src="<?php echo plugin_dir_url(__FILE__) . 'images/icon-tw.png'; ?>" alt="Share on Twitter" />
-			</a>
-		</div>
-		
-	<?php
+	<div class="sswpds-social-wrap">
+		<a href="<?php echo esc_url('http://www.facebook.com/share.php?u=') . get_permalink(); ?>" target="_blank">
+			<img src="<?php echo plugin_dir_url(__FILE__) . 'images/icon-fb.png'; ?>" alt="Share on Facebook" />
+		</a>
+		<a href="<?php echo esc_url('http://twitter.com/home?status=') . esc_attr( get_the_title() ) . ' ' . get_permalink(); ?>" target="_blank">
+			<img src="<?php echo plugin_dir_url(__FILE__) . 'images/icon-tw.png'; ?>" alt="Share on Twitter" />
+		</a>
+	</div>
 	
-	$social_share_html = ob_get_contents();
-	ob_end_clean();
+	<?php
+	$social_share_html = ob_get_clean();
 	
 	// check if post is enable
-	if( ( 'post' == $current_post_type && get_theme_mod( 'social_share_display_in_posts' ) ) 
-		|| ( 'page' == $current_post_type && get_theme_mod( 'social_share_display_in_page' ) ) 
+	if( ( 'post' == $current_post_type && get_theme_mod( 'social_share_display_in_posts' ) )
+		|| ( 'page' == $current_post_type && get_theme_mod( 'social_share_display_in_page' ) )
 		) {
 		$social_share_html_filter = $social_share_html;
 	}
-
 	
 	if( $echo )
 		echo $social_share_html_filter;
